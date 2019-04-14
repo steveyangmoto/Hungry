@@ -1,0 +1,8 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="restaurant_list_item_layout_margin">16dp</dimen>
+    <dimen name="restaurant_image_width">95dp</dimen>
+    <dimen name="restaurant_image_height">51dp</dimen>
+    <dimen name="restaurant_image_margin_left">16dp</dimen>
+    <dimen name="separator_height">1dp</dimen>
+</resources>
