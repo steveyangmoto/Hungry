@@ -1,2 +1,2 @@
 # Hungry
-A restaurant search app that uses Android MVVM and data binding.
+A restaurant search app for Android that uses MVVM, Android Data Binding and Dagger2.
