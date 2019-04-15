@@ -1,12 +1,14 @@
 package net.example.mvvm.hungry.ui.restaurant.list;
 
+import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
 import net.example.mvvm.hungry.HungryApplication;
 import net.example.mvvm.hungry.data.model.Restaurant;
-import net.example.mvvm.hungry.ui.base.BaseViewModel;
+
+import javax.inject.Inject;
 
 public class RestaurantItemViewModel extends AndroidViewModel {
     private MutableLiveData<Restaurant> restaurant = new MutableLiveData<>();

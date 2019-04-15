@@ -1,18 +1,16 @@
 package net.example.mvvm.hungry.ui.restaurant;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
-import net.example.mvvm.hungry.HungryApplication;
-import net.example.mvvm.hungry.R;
 import net.example.mvvm.hungry.BR;
-
+import net.example.mvvm.hungry.R;
 import net.example.mvvm.hungry.data.model.DataWrapper;
 import net.example.mvvm.hungry.data.model.Restaurant;
 import net.example.mvvm.hungry.databinding.ActivityRestaurantBinding;
@@ -20,7 +18,15 @@ import net.example.mvvm.hungry.ui.base.BaseActivity;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import dagger.android.DispatchingAndroidInjector;
+
 public class RestaurantActivity extends BaseActivity<ActivityRestaurantBinding,RestaurantViewModel> {
+
+    @Inject
+    protected ViewModelProvider.Factory viewModelFactory;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_restaurant;
@@ -32,16 +38,24 @@ public class RestaurantActivity extends BaseActivity<ActivityRestaurantBinding,R
 
     @Override
     public RestaurantViewModel getViewModel() {
-        RestaurantViewModel viewModel = ViewModelProviders.of(this, new RestaurantViewModel.Factory(
-                (HungryApplication)getApplication()))
+        RestaurantViewModel viewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(RestaurantViewModel.class);
         return viewModel;
+    }
+    @Inject
+    public RestaurantActivity() {
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         observeViewStates();
+    }
+
+
+    @Override
+    public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
+        return null;
     }
 
     private void observeViewStates(){

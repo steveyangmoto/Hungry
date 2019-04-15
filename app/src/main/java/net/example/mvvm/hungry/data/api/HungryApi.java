@@ -13,9 +13,10 @@ import net.example.mvvm.hungry.data.model.DataWrapper;
 import net.example.mvvm.hungry.data.model.Restaurant;
 import net.example.mvvm.hungry.data.model.RestaurantReqParam;
 
-import java.sql.ResultSet;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 import lombok.Getter;
 import lombok.NonNull;
@@ -27,28 +28,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import static net.example.mvvm.hungry.Constants.CONNECT_TIME_OUT_SECONDS;
 import static net.example.mvvm.hungry.Constants.READ_TIME_OUT_SECONDS;
 import static net.example.mvvm.hungry.Constants.WRITE_TIME_OUT_SECONDS;
-
 public class HungryApi {
-    private FootService service;
+    private FoodService service;
     private String baseUrl;
     @Getter
     private Picasso picasso;
 
-    public HungryApi(String baseUrl){
-        this.baseUrl = baseUrl;
-        OkHttpClient okHttpClient =  new OkHttpClient.Builder()
-                .connectTimeout(CONNECT_TIME_OUT_SECONDS, TimeUnit.SECONDS)
-                .readTimeout(READ_TIME_OUT_SECONDS, TimeUnit.SECONDS)
-                .writeTimeout(WRITE_TIME_OUT_SECONDS, TimeUnit.SECONDS).build();
-        picasso = new Picasso.Builder(HungryApplication.getAppContext())
-                .downloader(new OkHttp3Downloader(okHttpClient))
-                .build();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        service = retrofit.create(FootService.class);
+    @Inject
+    public HungryApi(FoodService service,Picasso picasso){
+        this.service = service;
+        this.picasso = picasso;
     }
 
     public LiveData<DataWrapper<List<Restaurant>>> getRestaurants(@NonNull RestaurantReqParam params){

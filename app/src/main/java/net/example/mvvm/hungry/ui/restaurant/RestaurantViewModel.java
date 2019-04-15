@@ -4,28 +4,30 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
-import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import net.example.mvvm.hungry.Constants;
 import net.example.mvvm.hungry.HungryApplication;
+import net.example.mvvm.hungry.data.api.HungryApi;
 import net.example.mvvm.hungry.data.model.DataWrapper;
 import net.example.mvvm.hungry.data.model.Restaurant;
 import net.example.mvvm.hungry.data.model.RestaurantReqParam;
-import net.example.mvvm.hungry.ui.base.BaseViewModel;
 import net.example.mvvm.hungry.ui.restaurant.list.RestaurantsAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RestaurantViewModel extends BaseViewModel implements RestaurantsAdapter.RestaurantClickListener {
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjection;
+
+public class RestaurantViewModel extends AndroidViewModel implements RestaurantsAdapter.RestaurantClickListener {
     private RestaurantReqParam restaurantReqParam;
     private int currentoffset = 0;
     private List<Restaurant> restaurantList = new ArrayList<>();
     private MutableLiveData<RestaurantViewState> restaurantViewStateObservable = new MutableLiveData<>();
     private RestaurantsAdapter adapter;
     private boolean loading;
+    private HungryApi api;
 
     public enum RestaurantViewState{
         PENDING_LOAD_RESTAURANTS,
@@ -34,8 +36,10 @@ public class RestaurantViewModel extends BaseViewModel implements RestaurantsAda
         PENDING_HIDE_PROGRESS_BAR
     }
 
-    public RestaurantViewModel(@NonNull HungryApplication application){
+    @Inject
+    public RestaurantViewModel(@NonNull HungryApi api,@NonNull Application application){
             super(application);
+            this.api = api;
             restaurantViewStateObservable.setValue(RestaurantViewState.PENDING_LOAD_RESTAURANTS);
             loading = true;
             adapter = new RestaurantsAdapter(this);
@@ -52,7 +56,7 @@ public class RestaurantViewModel extends BaseViewModel implements RestaurantsAda
                 setLng(getLongitude()).
                 setOffset(currentoffset).
                 setLimit(Constants.RESTAURANT_LIMIT_PER_LOAD);
-        final LiveData<DataWrapper<List<Restaurant>>> restaurantsObservable = ((HungryApplication)getApplication()).getApi().
+        final LiveData<DataWrapper<List<Restaurant>>> restaurantsObservable = api.
                                                                             getRestaurants(restaurantReqParam);
         return restaurantsObservable;
     }

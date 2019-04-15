@@ -17,6 +17,7 @@
 package net.example.mvvm.hungry.ui.base;
 
 import android.arch.lifecycle.AndroidViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
@@ -24,14 +25,22 @@ import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import net.example.mvvm.hungry.R;
+import net.example.mvvm.hungry.di.Injectable;
 
-public abstract class BaseActivity<T extends ViewDataBinding, V extends AndroidViewModel> extends AppCompatActivity
+import javax.inject.Inject;
+
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.DaggerAppCompatActivity;
+import dagger.android.support.HasSupportFragmentInjector;
+
+public abstract class BaseActivity<T extends ViewDataBinding, V extends AndroidViewModel> extends AppCompatActivity implements HasSupportFragmentInjector
 {
     protected T mViewDataBinding;
     protected V mViewModel;
@@ -47,7 +56,6 @@ public abstract class BaseActivity<T extends ViewDataBinding, V extends AndroidV
         super.onCreate(savedInstanceState);
         performDataBinding();
     }
-
     public T getViewDataBinding() {
         return mViewDataBinding;
     }
